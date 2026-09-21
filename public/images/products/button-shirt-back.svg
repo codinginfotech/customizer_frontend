@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 460">
+  <path d="M110 62 L70 98 L44 302 Q42 317 57 320 L95 329 Q110 332 111 317 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.2)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M290 62 L330 98 L356 302 Q358 317 343 320 L305 329 Q290 332 289 317 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.2)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M144 44 L110 62 L104 152 L104 418 Q104 433 122 435 Q200 447 278 435 Q296 433 296 418 L296 152 L290 62 L256 44 Q232 60 200 60 Q168 60 144 44 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.2)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M46 288 L113 300 L111 317 Q110 332 95 329 L57 320 Q42 317 44 302 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.16)" stroke-width="2"/>
+  <path d="M354 288 L287 300 L289 317 Q290 332 305 329 L343 320 Q358 317 356 302 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.16)" stroke-width="2"/>
+  <path d="M110 62 L70 98 L58 190 Q76 130 116 96 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M290 62 L330 98 L342 190 Q324 130 284 96 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M144 44 L110 62 L104 152 L104 418 L112 418 L112 154 L118 70 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M256 44 L290 62 L296 152 L296 418 L288 418 L288 154 L282 70 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M144 44 Q168 60 200 60 Q232 60 256 44 L262 60 Q262 106 200 106 Q138 106 138 60 Z" fill="rgba(0,0,0,0.05)" stroke="rgba(0,0,0,0.14)" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M144 44 Q168 60 200 60 Q232 60 256 44 L259 56 Q234 74 200 74 Q166 74 141 56 Z" fill="rgba(0,0,0,0.09)"/>
+  <path d="M194 108 L206 108 L206 430 L194 430 Z" fill="rgba(0,0,0,0.04)"/>
+  <path d="M194 108 L194 430 M206 108 L206 430" stroke="rgba(0,0,0,0.11)" stroke-width="2"/>
+  <path d="M108 412 Q200 428 292 412 L292 420 Q200 436 108 420 Z" fill="rgba(0,0,0,0.07)"/>
+</svg>

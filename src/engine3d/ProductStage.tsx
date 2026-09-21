@@ -134,10 +134,20 @@ export function ProductStage({ technicalView = false }: { technicalView?: boolea
     <div className="relative h-full w-full">
       <ModelErrorBoundary fallback={<MockupPreview />}>
         <Canvas
-          shadows
+          // "soft" → PCFSoftShadowMap. The default hard shadow map reads as CG.
+          shadows="soft"
           dpr={dpr}
           camera={{ position: [1.2, 0.8, 2.6], fov: 38 }}
-          gl={{ antialias: true, preserveDrawingBuffer: true }}
+          gl={{
+            antialias: true,
+            preserveDrawingBuffer: true,
+            // Filmic response: rolls highlights off instead of clipping them,
+            // which is most of the difference between a render that looks "3D"
+            // and one that looks photographed. Exposure is set per lighting
+            // preset by the rig.
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.15,
+          }}
           className="!touch-none"
         >
           <PerformanceMonitor
@@ -158,7 +168,26 @@ export function ProductStage({ technicalView = false }: { technicalView?: boolea
                 <PrimitiveModel config={config} />
               )}
             </group>
-            <ContactShadows position={[0, -0.95, 0]} opacity={0.45} scale={8} blur={2.6} far={2.4} />
+            {/* Two-tier grounding: a tight, dark core contact plus a wide soft
+                ambient occlusion pool — a single shadow reads as a sticker. */}
+            <ContactShadows
+              position={[0, -0.95, 0]}
+              opacity={0.55}
+              scale={5}
+              blur={1.6}
+              far={1.6}
+              resolution={1024}
+              color="#1a1512"
+            />
+            <ContactShadows
+              position={[0, -0.96, 0]}
+              opacity={0.28}
+              scale={11}
+              blur={4.5}
+              far={3.2}
+              resolution={512}
+              color="#241d18"
+            />
           </Suspense>
           <OrbitControls
             ref={controls as never}

@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { ModelConfiguration } from '@cpd/shared';
 import { useDesignerStore } from '../../../stores/designerStore';
+import { meshKey } from '../../../engine3d/meshNames';
 import { useAreaTextures } from './useAreaTextures';
 
 /**
@@ -27,7 +28,8 @@ export function GltfModel({ url, config }: { url: string; config: ModelConfigura
     cloned.traverse((obj) => {
       if (!(obj instanceof THREE.Mesh)) return;
       obj.castShadow = true;
-      const binding = config.meshBindings.find((b) => b.mesh === obj.name);
+      const name = meshKey(obj.name);
+      const binding = config.meshBindings.find((b) => meshKey(b.mesh) === name);
       if (binding) {
         const texture = textures.get(binding.areaKey);
         if (texture) {
@@ -38,7 +40,7 @@ export function GltfModel({ url, config }: { url: string; config: ModelConfigura
             roughness: config.roughness,
           });
         }
-      } else if (config.colorMeshes.includes(obj.name)) {
+      } else if (config.colorMeshes.some((m) => meshKey(m) === name)) {
         const material = (obj.material as THREE.MeshStandardMaterial).clone();
         material.color = new THREE.Color(productColor);
         obj.material = material;

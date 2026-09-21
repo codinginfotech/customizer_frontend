@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440">
+  <path d="M141 38 L64 76 L16 172 L88 204 L100 172 L100 408 Q100 422 116 424 Q200 436 284 424 Q300 422 300 408 L300 172 L312 204 L384 172 L336 76 L259 38 Q236 60 200 60 Q164 60 141 38 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.18)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M141 38 Q164 60 200 60 Q236 60 259 38 Q246 84 200 84 Q154 84 141 38 Z" fill="rgba(0,0,0,0.12)"/>
+  <path d="M100 172 L88 204 L16 172 L64 76 L141 38 Q120 60 108 100 Q100 130 100 172 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M300 172 L312 204 L384 172 L336 76 L259 38 Q280 60 292 100 Q300 130 300 172 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M22 158 L96 190 L88 204 L16 172 Z" fill="rgba(0,0,0,0.08)"/>
+  <path d="M378 158 L304 190 L312 204 L384 172 Z" fill="rgba(0,0,0,0.08)"/>
+  <path d="M184 84 L216 84 L216 158 L184 158 Z" fill="rgba(0,0,0,0.05)" stroke="rgba(0,0,0,0.16)" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M200 88 L200 154" stroke="rgba(0,0,0,0.14)" stroke-width="2"/>
+  <path d="M144 28 Q176 40 200 62 L200 96 Q172 76 152 56 Q145 42 144 28 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.28)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M256 28 Q224 40 200 62 L200 96 Q228 76 248 56 Q255 42 256 28 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.28)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M144 28 Q176 40 200 62 L200 72 Q170 52 147 38 Z" fill="rgba(0,0,0,0.09)"/>
+  <path d="M256 28 Q224 40 200 62 L200 72 Q230 52 253 38 Z" fill="rgba(0,0,0,0.09)"/>
+  <circle cx="200" cy="110" r="5.4" fill="rgba(255,255,255,0.7)" stroke="rgba(0,0,0,0.26)" stroke-width="1.7"/>
+  <circle cx="200" cy="138" r="5.4" fill="rgba(255,255,255,0.7)" stroke="rgba(0,0,0,0.26)" stroke-width="1.7"/>
+  <path d="M104 400 Q200 416 296 400 L296 408 Q200 424 104 408 Z" fill="rgba(0,0,0,0.06)"/>
+  <path d="M104 356 L104 402 L110 402 L110 356 Z" fill="rgba(0,0,0,0.07)"/>
+  <path d="M296 356 L296 402 L290 402 L290 356 Z" fill="rgba(0,0,0,0.07)"/>
+  <path d="M108 110 Q120 190 112 300 L108 300 Q112 190 104 116 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M292 110 Q280 190 288 300 L292 300 Q288 190 296 116 Z" fill="rgba(0,0,0,0.05)"/>
+</svg>

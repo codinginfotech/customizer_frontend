@@ -16,6 +16,12 @@ export interface PresetParams {
   clearcoatRoughness?: number;
   sheen?: number;
   sheenRoughness?: number;
+  /**
+   * REQUIRED for sheen to have any effect: three defaults `sheenColor` to
+   * BLACK, so a non-zero `sheen` with no colour set contributes exactly
+   * nothing and cloth renders as matte plastic. Always pair the two.
+   */
+  sheenColor?: string;
   normal?: 'knit' | 'weave' | 'twill' | 'grain';
   normalScale?: number;
   normalRepeat?: number;
@@ -23,12 +29,13 @@ export interface PresetParams {
 }
 
 export const MATERIAL_PRESETS: Record<MaterialPreset, PresetParams> = {
-  cotton: { roughness: 0.92, metalness: 0, sheen: 0.35, sheenRoughness: 0.8, normal: 'knit', normalScale: 0.55, normalRepeat: 26 },
-  heavy_cotton: { roughness: 0.95, metalness: 0, sheen: 0.3, sheenRoughness: 0.9, normal: 'knit', normalScale: 0.8, normalRepeat: 18 },
-  polyester: { roughness: 0.8, metalness: 0, sheen: 0.5, sheenRoughness: 0.6, normal: 'weave', normalScale: 0.35, normalRepeat: 34 },
-  denim: { roughness: 0.97, metalness: 0, normal: 'twill', normalScale: 1.0, normalRepeat: 22 },
+  cotton: { roughness: 0.9, metalness: 0, sheen: 0.65, sheenRoughness: 0.62, sheenColor: '#fff6ea', normal: 'knit', normalScale: 0.55, normalRepeat: 26 },
+  heavy_cotton: { roughness: 0.95, metalness: 0, sheen: 0.55, sheenRoughness: 0.78, sheenColor: '#fff4e6', normal: 'knit', normalScale: 0.8, normalRepeat: 18 },
+  // Athletic knit — tighter, cooler, more directional sheen than cotton.
+  polyester: { roughness: 0.62, metalness: 0, sheen: 1.0, sheenRoughness: 0.34, sheenColor: '#eef4ff', normal: 'weave', normalScale: 0.35, normalRepeat: 34 },
+  denim: { roughness: 0.95, metalness: 0, sheen: 0.35, sheenRoughness: 0.7, sheenColor: '#e9eeff', normal: 'twill', normalScale: 1.0, normalRepeat: 22 },
   leather: { roughness: 0.55, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.5, normal: 'grain', normalScale: 0.7, normalRepeat: 10 },
-  canvas: { roughness: 0.98, metalness: 0, normal: 'weave', normalScale: 1.1, normalRepeat: 14 },
+  canvas: { roughness: 0.97, metalness: 0, sheen: 0.4, sheenRoughness: 0.85, sheenColor: '#fffaf0', normal: 'weave', normalScale: 1.1, normalRepeat: 14 },
   ceramic: { roughness: 0.3, metalness: 0, clearcoat: 0.9, clearcoatRoughness: 0.2 },
   glass: { roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.4 },
   metal: { roughness: 0.4, metalness: 0.85 },
@@ -129,11 +136,33 @@ export interface MaterialOptions {
   map?: THREE.Texture | null;
   transparent?: boolean;
   overlay?: boolean;
+  /**
+   * The material authored into the GLB. When supplied, its baked PBR maps
+   * (normal / roughness / metalness / AO) are carried over and the procedural
+   * preset is demoted to a fallback for whatever the asset does not provide.
+   *
+   * Without this, buying a photoreal asset is pointless — every baked wrinkle,
+   * seam and occlusion would be discarded and replaced with tiled noise.
+   */
+  preserveFrom?: THREE.Material | null;
+  /**
+   * `color` is a product tint rather than the mesh's own colour. three
+   * multiplies `color` by `map`, so inheriting a baked albedo would cancel the
+   * tint out — navy joggers under a dark fabric texture render black. The
+   * asset's albedo is dropped in that case; its normal / roughness / AO maps
+   * still carry every wrinkle, weave and seam, so the surface keeps its detail.
+   */
+  tinted?: boolean;
 }
+
+/** Anything three-ish that can carry standard PBR maps. */
+type PbrSource = Partial<THREE.MeshStandardMaterial> & Partial<THREE.MeshPhysicalMaterial>;
 
 /** Create a physical material for a preset. Caller owns disposal. */
 export function createPresetMaterial(preset: MaterialPreset, options: MaterialOptions = {}): THREE.MeshPhysicalMaterial {
   const p = MATERIAL_PRESETS[preset];
+  const source = (options.preserveFrom ?? null) as PbrSource | null;
+
   const material = new THREE.MeshPhysicalMaterial({
     color: options.color ?? '#ffffff',
     map: options.map ?? null,
@@ -143,20 +172,56 @@ export function createPresetMaterial(preset: MaterialPreset, options: MaterialOp
     clearcoatRoughness: p.clearcoatRoughness ?? 0.2,
     sheen: p.sheen ?? 0,
     sheenRoughness: p.sheenRoughness ?? 0.8,
-    envMapIntensity: p.envMapIntensity ?? 0.9,
+    // Without this the sheen term is multiplied by black and disappears.
+    sheenColor: new THREE.Color(p.sheenColor ?? '#ffffff'),
+    envMapIntensity: p.envMapIntensity ?? 1.0,
     side: THREE.DoubleSide,
   });
-  if (p.normal) {
-    const normalMap = makeNormalTexture(p.normal);
+
+  // Dyed fibres scatter their own colour, so a coloured garment's sheen is
+  // tinted, not white. Leaving it white lays a neutral veil over the whole
+  // surface that washes the hue out — navy fabric rendered as flat grey.
+  if ((p.sheen ?? 0) > 0 && options.color != null) {
+    material.sheenColor.lerp(new THREE.Color(options.color), 0.55);
+  }
+
+  // ---- carry over whatever the asset actually baked -------------------------
+  let hasAuthoredNormal = false;
+  if (source) {
+    if (source.normalMap) {
+      material.normalMap = source.normalMap;
+      if (source.normalScale) material.normalScale.copy(source.normalScale);
+      hasAuthoredNormal = true;
+    }
+    if (source.roughnessMap) {
+      material.roughnessMap = source.roughnessMap;
+      // The map modulates the scalar, so a preset value of 0.9 would crush it.
+      material.roughness = source.roughness ?? 1;
+    }
+    if (source.metalnessMap) {
+      material.metalnessMap = source.metalnessMap;
+      material.metalness = source.metalness ?? 1;
+    }
+    if (source.aoMap) {
+      material.aoMap = source.aoMap;
+      material.aoMapIntensity = source.aoMapIntensity ?? 1;
+    }
+    // Only inherit the albedo when the caller is not painting one (a print
+    // zone or a product-colour tint always wins).
+    if (!options.map && !options.tinted && source.map) material.map = source.map;
+  }
+
+  // The procedural weave is a stand-in; never let it overwrite a baked normal.
+  if (p.normal && !hasAuthoredNormal) {
+    const normalMap = makeNormalTexture(p.normal).clone();
+    normalMap.needsUpdate = true;
+    normalMap.wrapS = THREE.RepeatWrapping;
+    normalMap.wrapT = THREE.RepeatWrapping;
+    normalMap.repeat.setScalar(p.normalRepeat ?? 20);
     material.normalMap = normalMap;
     material.normalScale = new THREE.Vector2(p.normalScale ?? 0.5, p.normalScale ?? 0.5);
-    // Per-material repeat requires cloned texture settings; share via onBeforeCompile-safe clone.
-    material.normalMap = normalMap.clone();
-    material.normalMap.needsUpdate = true;
-    material.normalMap.wrapS = THREE.RepeatWrapping;
-    material.normalMap.wrapT = THREE.RepeatWrapping;
-    material.normalMap.repeat.setScalar(p.normalRepeat ?? 20);
   }
+
   if (options.transparent || options.overlay) {
     material.transparent = true;
     material.polygonOffset = true;

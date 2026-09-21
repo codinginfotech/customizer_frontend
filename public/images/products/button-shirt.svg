@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 460">
+  <path d="M110 62 L70 98 L44 302 Q42 317 57 320 L95 329 Q110 332 111 317 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.2)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M290 62 L330 98 L356 302 Q358 317 343 320 L305 329 Q290 332 289 317 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.2)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M144 44 L110 62 L104 152 L104 418 Q104 433 122 435 Q200 447 278 435 Q296 433 296 418 L296 152 L290 62 L256 44 Q232 66 200 66 Q168 66 144 44 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.2)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M46 288 L113 300 L111 317 Q110 332 95 329 L57 320 Q42 317 44 302 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.16)" stroke-width="2"/>
+  <path d="M354 288 L287 300 L289 317 Q290 332 305 329 L343 320 Q358 317 356 302 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.16)" stroke-width="2"/>
+  <path d="M110 62 L70 98 L58 190 Q76 130 116 96 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M290 62 L330 98 L342 190 Q324 130 284 96 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M144 44 L110 62 L104 152 L104 418 L112 418 L112 154 L118 70 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M256 44 L290 62 L296 152 L296 418 L288 418 L288 154 L282 70 Z" fill="rgba(0,0,0,0.05)"/>
+  <path d="M144 44 Q168 66 200 66 Q232 66 256 44 Q244 92 200 92 Q156 92 144 44 Z" fill="rgba(0,0,0,0.10)"/>
+  <path d="M186 82 L214 82 L214 430 L186 430 Z" fill="rgba(0,0,0,0.05)" stroke="rgba(0,0,0,0.15)" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M147 34 Q178 46 200 68 L200 102 Q174 82 155 62 Q148 48 147 34 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.28)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M253 34 Q222 46 200 68 L200 102 Q226 82 245 62 Q252 48 253 34 Z" fill="#e9e5df" stroke="rgba(0,0,0,0.28)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M147 34 Q178 46 200 68 L200 78 Q172 58 150 44 Z" fill="rgba(0,0,0,0.09)"/>
+  <path d="M253 34 Q222 46 200 68 L200 78 Q228 58 250 44 Z" fill="rgba(0,0,0,0.09)"/>
+  <circle cx="189" cy="95" r="3.8" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,0,0.26)" stroke-width="1.4"/>
+  <circle cx="211" cy="95" r="3.8" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,0,0.26)" stroke-width="1.4"/>
+  <path d="M132 160 L182 160 L182 206 L157 218 L132 206 Z" fill="rgba(0,0,0,0.04)" stroke="rgba(0,0,0,0.16)" stroke-width="2.5" stroke-linejoin="round"/>
+  <g fill="rgba(255,255,255,0.68)" stroke="rgba(0,0,0,0.24)" stroke-width="1.6">
+    <circle cx="200" cy="132" r="5"/>
+    <circle cx="200" cy="182" r="5"/>
+    <circle cx="200" cy="232" r="5"/>
+    <circle cx="200" cy="282" r="5"/>
+    <circle cx="200" cy="332" r="5"/>
+    <circle cx="200" cy="382" r="5"/>
+  </g>
+  <path d="M108 412 Q200 428 292 412 L292 420 Q200 436 108 420 Z" fill="rgba(0,0,0,0.07)"/>
+</svg>
