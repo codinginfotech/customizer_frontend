@@ -12,7 +12,7 @@ export default defineConfig({
       // Consume the shared workspace package from SOURCE: Vite transpiles the
       // TS directly, so schema changes apply instantly with no stale
       // prebundle and no CJS interop in the app bundle.
-      '@cpd/shared': path.resolve(dirname, '../shared/src/index.ts'),
+      '@cpd/shared': path.resolve(dirname, 'shared/src/index.ts'),
     },
   },
   server: {
