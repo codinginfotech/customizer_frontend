@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { useDesignerStore } from '../../stores/designerStore';
 import { useUiStore } from '../../stores/uiStore';
+import { useStorefrontStore } from '../../stores/storefrontStore';
 import { useAutosave } from '../../hooks/useAutosave';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useIsDesktop } from '../../hooks/useMediaQuery';
@@ -17,6 +18,7 @@ import { MobileToolbar } from './MobileToolbar';
 import { CommandPalette } from './CommandPalette';
 import { TransferModal } from './TransferModal';
 import { PresentationOverlay } from './PresentationOverlay';
+import { AddToCartModal } from '../shopify/AddToCartModal';
 
 /**
  * The studio shell: dark professional chrome (top bar, tool rail, dock
@@ -28,6 +30,8 @@ export function DesignerLayout() {
   const isDesktop = useIsDesktop();
   const selectedIds = useDesignerStore((s) => s.selectedIds);
   const workspaceMode = useUiStore((s) => s.workspaceMode);
+  // Shopify storefront mode: anonymous shopper, "Save" means "Add to cart".
+  const storefront = useStorefrontStore((s) => s.active);
   const [saveOpen, setSaveOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
@@ -71,9 +75,13 @@ export function DesignerLayout() {
 
   const modals = (
     <>
-      <SaveDesignModal open={saveOpen} onClose={() => setSaveOpen(false)} />
+      {storefront ? (
+        <AddToCartModal open={saveOpen} onClose={() => setSaveOpen(false)} />
+      ) : (
+        <SaveDesignModal open={saveOpen} onClose={() => setSaveOpen(false)} />
+      )}
       <ExportModal open={exportOpen} onClose={() => setExportOpen(false)} />
-      <TransferModal open={transferOpen} onClose={() => setTransferOpen(false)} />
+      {!storefront && <TransferModal open={transferOpen} onClose={() => setTransferOpen(false)} />}
       <ShortcutsModal />
       <CommandPalette onSave={() => setSaveOpen(true)} onExport={() => setExportOpen(true)} />
       <PresentationOverlay />
@@ -107,7 +115,7 @@ export function DesignerLayout() {
       <TopBar
         onSave={() => setSaveOpen(true)}
         onExport={() => setExportOpen(true)}
-        onTransfer={() => setTransferOpen(true)}
+        onTransfer={storefront ? undefined : () => setTransferOpen(true)}
       />
       <div className="flex min-h-0 flex-1">
         {/* Left: tool rail + active panel */}

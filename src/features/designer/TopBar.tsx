@@ -11,13 +11,16 @@ import {
   Maximize2,
   Redo2,
   Save,
+  ShoppingBag,
   Undo2,
+  X,
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useDesignerStore } from '../../stores/designerStore';
 import { useUiStore } from '../../stores/uiStore';
+import { useStorefrontStore } from '../../stores/storefrontStore';
 import { Segmented } from '../../components/ui';
 
 /** Autosave state, rendered as a quiet dot + label rather than a loud badge. */
@@ -86,27 +89,54 @@ export function TopBar({
   const setShortcutsOpen = useUiStore((s) => s.setShortcutsOpen);
   const setCommandPaletteOpen = useUiStore((s) => s.setCommandPaletteOpen);
   const setPresentationOpen = useUiStore((s) => s.setPresentationOpen);
+  const storefront = useStorefrontStore((s) => s.context);
+
+  /** Storefront mode: "back" closes the theme modal or returns to the product page. */
+  function leaveStorefront() {
+    if (!storefront) return;
+    if (storefront.embedded && window.parent !== window) {
+      window.parent.postMessage({ type: 'cpd:close' }, '*');
+    } else if (storefront.returnUrl) {
+      window.location.assign(storefront.returnUrl);
+    } else {
+      window.history.back();
+    }
+  }
 
   return (
     <header className="z-30 flex h-13 shrink-0 items-center justify-between gap-3 border-b border-white/[.07] bg-studio-chrome px-2.5 sm:px-3">
       {/* Identity */}
       <div className="flex min-w-0 flex-1 items-center gap-1.5">
-        <Link
-          to={product ? `/products/${product.slug}` : '/products'}
-          className={railBtn}
-          aria-label="Back to product"
-          title="Back to product"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+        {storefront ? (
+          <button
+            type="button"
+            onClick={leaveStorefront}
+            className={railBtn}
+            aria-label={storefront.embedded ? 'Close the designer' : 'Back to product'}
+            title={storefront.embedded ? 'Close' : 'Back to product'}
+          >
+            {storefront.embedded ? <X className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+          </button>
+        ) : (
+          <Link
+            to={product ? `/products/${product.slug}` : '/products'}
+            className={railBtn}
+            aria-label="Back to product"
+            title="Back to product"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        )}
         <div className="mx-1 h-5 w-px bg-white/10" />
         <div className="min-w-0">
           <p className="truncate text-xs font-medium leading-tight text-zinc-100">
             {designName || 'Untitled design'}
           </p>
-          <p className="truncate text-2xs leading-tight text-zinc-500">{product?.name}</p>
+          <p className="truncate text-2xs leading-tight text-zinc-500">
+            {storefront ? storefront.shopName ?? storefront.shopDomain : product?.name}
+          </p>
         </div>
-        <SaveStatusChip />
+        {!storefront && <SaveStatusChip />}
       </div>
 
       {/* Canvas controls */}
@@ -206,18 +236,28 @@ export function TopBar({
             />
           </div>
         )}
-        <button
-          onClick={onExport}
-          className="btn btn-sm hidden h-8 border border-white/[.12] bg-transparent text-zinc-200 hover:border-white/20 hover:bg-white/[.06] sm:inline-flex"
-        >
-          <Download className="h-3.5 w-3.5" />
-          <span className="hidden lg:inline">Export</span>
-        </button>
+        {!storefront && (
+          <button
+            onClick={onExport}
+            className="btn btn-sm hidden h-8 border border-white/[.12] bg-transparent text-zinc-200 hover:border-white/20 hover:bg-white/[.06] sm:inline-flex"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span className="hidden lg:inline">Export</span>
+          </button>
+        )}
         <button
           onClick={onSave}
           className="btn btn-sm h-8 bg-white text-gray-900 hover:bg-zinc-200"
         >
-          <Save className="h-3.5 w-3.5" /> Save
+          {storefront ? (
+            <>
+              <ShoppingBag className="h-3.5 w-3.5" /> Add to cart
+            </>
+          ) : (
+            <>
+              <Save className="h-3.5 w-3.5" /> Save
+            </>
+          )}
         </button>
       </div>
     </header>

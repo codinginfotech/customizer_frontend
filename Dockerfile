@@ -15,6 +15,8 @@ ARG VITE_FIREBASE_STORAGE_BUCKET
 ARG VITE_FIREBASE_MESSAGING_SENDER_ID
 ARG VITE_FIREBASE_APP_ID
 ARG VITE_FIREBASE_MEASUREMENT_ID
+# Shopify app Client ID (public) for App Bridge on /shopify/admin
+ARG VITE_SHOPIFY_API_KEY
 # shared/ is a vendored local package ("file:shared"); its manifest must exist
 # before npm install so the symlink can be created.
 COPY package.json package-lock.json* ./

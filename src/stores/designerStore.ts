@@ -51,7 +51,8 @@ interface DesignerState {
   initialize: (
     product: Product,
     variant: ProductVariant | null,
-    existing?: { id: number; name: string; doc: DesignDocument } | null,
+    /** `id: null` loads a document without binding it to a saved design (storefront mode). */
+    existing?: { id: number | null; name: string; doc: DesignDocument } | null,
   ) => void;
   reset: () => void;
 

@@ -18,6 +18,10 @@ const DashboardRoutes = lazy(() => import('./features/dashboard/DashboardRoutes'
 const CartPage = lazy(() => import('./features/cart/CartPage'));
 const CheckoutPage = lazy(() => import('./features/cart/CheckoutPage'));
 const AdminRoutes = lazy(() => import('./features/admin/AdminRoutes'));
+// Shopify app: embedded admin + storefront customizer (no marketing chrome).
+const ShopifyAdminRoutes = lazy(() => import('./features/shopify/ShopifyAdminRoutes'));
+const ShopifyCustomizePage = lazy(() => import('./features/shopify/ShopifyCustomizePage'));
+const ShopifyInstallPage = lazy(() => import('./features/shopify/ShopifyInstallPage'));
 
 export default function App() {
   const initialize = useAuthStore((s) => s.initialize);
@@ -73,6 +77,10 @@ export default function App() {
             </AdminRoute>
           }
         />
+
+        <Route path="/shopify/admin/*" element={<ShopifyAdminRoutes />} />
+        <Route path="/shopify/customize" element={<ShopifyCustomizePage />} />
+        <Route path="/shopify/install" element={<ShopifyInstallPage />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

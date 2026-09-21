@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import { estimateDpi, ratePrintQuality } from '@cpd/shared';
 import { useDesignerStore } from '../../../stores/designerStore';
 import { useAuthStore } from '../../../stores/authStore';
+import { useStorefrontStore } from '../../../stores/storefrontStore';
+import { uploadStorefrontAsset } from '../../shopify/storefrontService';
 import { deleteAsset, fetchAssets, uploadAsset } from '../../../services/catalogService';
 import { apiErrorMessage } from '../../../services/apiClient';
 import type { UploadedAsset } from '../../../types/catalog';
@@ -17,6 +19,9 @@ const MAX_MB = 15;
 
 export function UploadPanel() {
   const user = useAuthStore((s) => s.user);
+  // Shopify storefront: anonymous uploads scoped to the store; the "library"
+  // is just this session's uploads.
+  const storefront = useStorefrontStore((s) => s.context);
   const [assets, setAssets] = useState<UploadedAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -24,13 +29,13 @@ export function UploadPanel() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || storefront) return;
     setLoading(true);
     fetchAssets()
       .then(setAssets)
       .catch(() => undefined)
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, storefront]);
 
   const doUpload = useCallback(async (file: File) => {
     if (file.size > MAX_MB * 1024 * 1024) {
@@ -39,7 +44,9 @@ export function UploadPanel() {
     }
     setUploading(true);
     try {
-      const asset = await uploadAsset(file);
+      const asset = storefront
+        ? await uploadStorefrontAsset(storefront.shopDomain, file)
+        : await uploadAsset(file);
       setAssets((prev) => [asset, ...prev]);
       addAssetToCanvas(asset);
       toast.success('Uploaded and added to canvas');
@@ -48,7 +55,7 @@ export function UploadPanel() {
     } finally {
       setUploading(false);
     }
-  }, []);
+  }, [storefront]);
 
   function addAssetToCanvas(asset: UploadedAsset) {
     const store = useDesignerStore.getState();
@@ -71,7 +78,8 @@ export function UploadPanel() {
       height,
       naturalWidth: natW,
       naturalHeight: natH,
-      assetId: asset.id,
+      // Storefront uploads have no library record (negative client-side id).
+      assetId: asset.id > 0 ? asset.id : undefined,
       rotation: 0,
       opacity: 1,
       locked: false,
@@ -98,7 +106,7 @@ export function UploadPanel() {
     return { dpi, rating: ratePrintQuality(dpi) };
   }
 
-  if (!user) {
+  if (!user && !storefront) {
     return (
       <div className="space-y-4">
         <p className="rounded-lg border border-dashed border-gray-300 bg-gray-50/60 px-3 py-4 text-xs leading-relaxed text-gray-600">
@@ -197,7 +205,7 @@ export function UploadPanel() {
                   <button
                     className="absolute right-1 top-1 rounded-md border border-gray-200 bg-white/95 p-1 text-gray-500 opacity-0 shadow-card backdrop-blur transition-opacity hover:text-red-700 focus-visible:opacity-100 group-hover:opacity-100"
                     onClick={async () => {
-                      await deleteAsset(asset.id).catch(() => undefined);
+                      if (asset.id > 0) await deleteAsset(asset.id).catch(() => undefined);
                       setAssets((prev) => prev.filter((a) => a.id !== asset.id));
                     }}
                     title="Delete asset"
