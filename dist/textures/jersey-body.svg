@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Body wrap artwork. u: x=0 front-center → 256 right side → 512 back-center
+       → 768 left side → 1024 front-center. v: y=0 collar, y=1024 hem. -->
+  <rect width="1024" height="1024" fill="#262d6e"/>
+  <!-- shoulder yoke shading -->
+  <rect width="1024" height="70" fill="#1f2560"/>
+  <!-- RIGHT side accent stack (centered x=256) -->
+  <g>
+    <path d="M186 40 L326 40 L306 190 L206 190 Z" fill="#9aa0a8"/>
+    <path d="M198 205 L314 205 L298 330 L214 330 Z" fill="#4667e0"/>
+    <path d="M212 345 L300 345 L290 450 L222 450 Z" fill="#9aa0a8"/>
+    <path d="M206 700 L306 660 L306 730 L206 770 Z" fill="#4667e0"/>
+    <path d="M206 790 L306 750 L306 820 L206 860 Z" fill="#5b7ce6"/>
+    <path d="M206 880 L306 840 L306 910 L206 950 Z" fill="#9aa0a8"/>
+  </g>
+  <!-- LEFT side accent stack (centered x=768, mirrored) -->
+  <g>
+    <path d="M838 40 L698 40 L718 190 L818 190 Z" fill="#9aa0a8"/>
+    <path d="M826 205 L710 205 L726 330 L810 330 Z" fill="#4667e0"/>
+    <path d="M812 345 L724 345 L734 450 L802 450 Z" fill="#9aa0a8"/>
+    <path d="M818 700 L718 660 L718 730 L818 770 Z" fill="#4667e0"/>
+    <path d="M818 790 L718 750 L718 820 L818 860 Z" fill="#5b7ce6"/>
+    <path d="M818 880 L718 840 L718 910 L818 950 Z" fill="#9aa0a8"/>
+  </g>
+  <!-- back center chevron (x=512) -->
+  <path d="M472 120 L512 90 L552 120 L512 150 Z" fill="#9aa0a8" opacity="0.85"/>
+  <!-- hem band -->
+  <rect y="988" width="1024" height="36" fill="#1f2560"/>
+</svg>

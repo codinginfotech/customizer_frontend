@@ -1,0 +1,379 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ *
+ * Tokens
+ * ------------------------------------------------------------------ */
+:root {
+  --hairline: rgba(26, 24, 22, 0.09);
+  --hairline-strong: rgba(26, 24, 22, 0.14);
+  --header-h: 60px;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: theme('colors.gray.200');
+  }
+
+  html {
+    @apply text-gray-900 antialiased;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-surface font-sans;
+    /* Inter's alternate glyphs: single-storey a/g off, straight l, rounded quotes */
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    font-variant-ligatures: contextual common-ligatures;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Headings read as a deliberate scale, not browser defaults. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold text-gray-900;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  h1 {
+    letter-spacing: -0.028em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Numbers in tables, prices and counters must never jitter. */
+  th,
+  td,
+  time,
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: theme('colors.brand.200');
+    color: theme('colors.gray.900');
+  }
+
+  /* One consistent focus treatment for the whole app. */
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.500');
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Native controls inherit the warm palette */
+  input[type='color'] {
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0;
+    background: none;
+  }
+  input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type='color']::-webkit-color-swatch {
+    border: 1px solid var(--hairline-strong);
+    border-radius: 6px;
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px;
+    background: transparent;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 999px;
+    background: theme('colors.gray.200');
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    margin-top: -5.5px;
+    border-radius: 999px;
+    background: theme('colors.gray.900');
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(26, 24, 22, 0.25);
+    cursor: pointer;
+    transition: transform 0.12s ease-out;
+  }
+  input[type='range']::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Components
+ * ------------------------------------------------------------------ */
+@layer components {
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3.5 text-sm font-medium leading-none transition-all duration-150 ease-out;
+    @apply focus:outline-none focus-visible:outline-none;
+    @apply disabled:pointer-events-none disabled:opacity-45;
+    height: 2.25rem;
+    letter-spacing: -0.006em;
+  }
+  .btn:focus-visible {
+    box-shadow: theme('boxShadow.focus');
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(0.5px);
+  }
+
+  /* Ink primary — the ember accent is reserved for state, not every button. */
+  .btn-primary {
+    @apply btn bg-gray-900 text-white hover:bg-gray-800;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
+      0 1px 2px rgba(26, 24, 22, 0.24);
+  }
+  .btn-accent {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+      0 1px 2px rgba(26, 24, 22, 0.2);
+  }
+  .btn-secondary {
+    @apply btn border border-gray-200 bg-white text-gray-800 hover:border-gray-300 hover:bg-gray-50;
+    box-shadow: 0 1px 2px rgba(26, 24, 22, 0.04);
+  }
+  .btn-ghost {
+    @apply btn text-gray-600 hover:bg-gray-100 hover:text-gray-900;
+  }
+  .btn-danger {
+    @apply btn bg-red-700 text-white hover:bg-red-800;
+  }
+  .btn-lg {
+    @apply px-5 text-[0.9375rem];
+    height: 2.75rem;
+  }
+  .btn-sm {
+    @apply gap-1.5 rounded-md px-2.5 text-xs;
+    height: 1.875rem;
+  }
+
+  .input {
+    @apply block w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 transition-colors duration-150;
+    @apply placeholder:text-gray-400;
+    @apply hover:border-gray-300;
+    @apply focus:border-gray-400 focus:outline-none;
+    @apply disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400;
+    height: 2.25rem;
+    box-shadow: 0 1px 1px rgba(26, 24, 22, 0.03);
+  }
+  .input:focus {
+    box-shadow: 0 0 0 3px rgba(205, 100, 53, 0.14);
+  }
+  textarea.input,
+  select[multiple].input {
+    @apply py-2;
+    height: auto;
+    min-height: 2.25rem;
+  }
+  select.input {
+    @apply appearance-none pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237d766d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+  }
+
+  /* Compact control for dense inspector / table rows */
+  .input-sm {
+    @apply input rounded-md px-2 text-xs;
+    height: 1.75rem;
+  }
+
+  /* Square icon-only button — the unit of every toolbar in the app */
+  .icon-btn {
+    @apply inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors duration-150;
+    @apply hover:bg-gray-100 hover:text-gray-900;
+    @apply disabled:pointer-events-none disabled:opacity-35;
+  }
+  .icon-btn-active {
+    @apply bg-gray-900 text-white hover:bg-gray-800 hover:text-white;
+  }
+
+  .label {
+    @apply mb-1.5 block text-2xs font-medium uppercase tracking-label text-gray-500;
+  }
+
+  /* Micro label used inside the inspector's dense control grids */
+  .micro-label {
+    @apply block text-2xs font-medium uppercase tracking-label text-gray-500;
+  }
+
+  .card {
+    @apply rounded-xl border border-gray-200 bg-white;
+  }
+  .card-raised {
+    @apply card shadow-card;
+  }
+
+  /* An interactive card: lifts a hair, borders firm up. Never a big shadow. */
+  .card-link {
+    @apply card transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-raised;
+  }
+
+  .panel-title {
+    @apply text-2xs font-medium uppercase tracking-label text-gray-500;
+  }
+
+  /* Small state pill — the workhorse for counts, statuses, meta. */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2 py-1 text-2xs font-medium text-gray-600;
+  }
+
+  /* Section eyebrow used across marketing + app headers */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-2xs font-medium uppercase tracking-label text-gray-500;
+  }
+
+  .divider {
+    @apply h-px w-full bg-gray-200;
+  }
+
+  /* Data tables: hairline rows, no zebra, generous leading. */
+  .table {
+    @apply w-full border-collapse text-sm;
+  }
+  .table thead th {
+    @apply border-b border-gray-200 px-4 py-2.5 text-left text-2xs font-medium uppercase tracking-label text-gray-500;
+  }
+  .table tbody td {
+    @apply border-b border-gray-100 px-4 py-3 align-middle text-gray-700;
+  }
+  .table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table tbody tr {
+    @apply transition-colors;
+  }
+  .table tbody tr:hover {
+    background-color: rgba(250, 249, 247, 0.8);
+  }
+
+  /* Studio (dark chrome) equivalents */
+  .studio-btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md text-zinc-400 transition-colors duration-150;
+    @apply hover:bg-white/[.07] hover:text-zinc-100;
+    @apply disabled:pointer-events-none disabled:opacity-30;
+  }
+  .studio-input {
+    @apply block w-full rounded-md border border-white/10 bg-white/[.04] px-2.5 py-1.5 text-sm text-zinc-100 transition-colors;
+    @apply placeholder:text-zinc-600 hover:border-white/20 focus:border-brand-500/70 focus:outline-none;
+  }
+  .studio-label {
+    @apply mb-1 block text-2xs font-medium uppercase tracking-label text-zinc-500;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Utilities
+ * ------------------------------------------------------------------ */
+@layer utilities {
+  .hairline {
+    box-shadow: 0 0 0 1px var(--hairline);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Fine dotted grid — used behind hero + empty canvases. */
+  .bg-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(26, 24, 22, 0.09) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  .bg-grid-dark {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.055) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  /* Diagonal hatch for unavailable / disabled regions */
+  .bg-hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(26, 24, 22, 0.05) 0 1px,
+      transparent 1px 7px
+    );
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* Thin scrollbars in panels and scroll regions */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(125, 118, 109, 0.35) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: rgba(125, 118, 109, 0.28);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 118, 109, 0.5);
+  background-clip: content-box;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: theme('colors.gray.200');
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: shimmer 1.6s infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
