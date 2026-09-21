@@ -88,6 +88,22 @@ export default function LandingPage() {
               </a>
             </div>
 
+            {/* Launch badge — Peerlist project embed (external image). */}
+            <a
+              href="https://peerlist.io/ayaanp14/project/codekairo"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6 inline-block rounded-lg transition-opacity hover:opacity-90"
+              aria-label="Codekairo on Peerlist"
+            >
+              <img
+                src="https://peerlist.io/api/v1/projects/embed/PRJH8OEQPN7OK6EPPCP9KKJA6MLG8Q?showUpvote=false&theme=light"
+                alt="Codekairo on Peerlist"
+                style={{ width: 'auto', height: 72 }}
+                loading="lazy"
+              />
+            </a>
+
             <dl className="mt-12 grid max-w-md grid-cols-3 gap-px overflow-hidden rounded-xl border border-gray-200 bg-gray-200">
               {[
                 { k: 'Products', v: '15+' },
