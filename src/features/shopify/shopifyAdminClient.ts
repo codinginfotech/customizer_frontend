@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import type { ShopifySettings } from '@cpd/shared';
 import { getSessionToken } from './appBridge';
 
@@ -15,6 +15,20 @@ shopifyAdminApi.interceptors.request.use(async (config) => {
   config.headers.Authorization = `Bearer ${await getSessionToken()}`;
   return config;
 });
+
+// A dead store credential answers SHOPIFY_REAUTH; the API re-runs the token
+// exchange on the next authenticated request, so one retry is enough.
+shopifyAdminApi.interceptors.response.use(
+  (res) => res,
+  async (error: AxiosError<{ code?: string }>) => {
+    const original = error.config as (InternalAxiosRequestConfig & { _reauthRetried?: boolean }) | undefined;
+    if (error.response?.status === 401 && error.response.data?.code === 'SHOPIFY_REAUTH' && original && !original._reauthRetried) {
+      original._reauthRetried = true;
+      return shopifyAdminApi.request(original);
+    }
+    return Promise.reject(error);
+  },
+);
 
 // ---------- types ----------
 export interface ShopInfo {
