@@ -4,7 +4,7 @@ import { LayoutDashboard, Package, Settings, ShoppingBag } from 'lucide-react';
 import clsx from 'clsx';
 import { PageSpinner } from '../../components/ui';
 import { apiErrorMessage } from '../../services/apiClient';
-import { isEmbeddedInShopify, loadAppBridge, SHOPIFY_API_KEY } from './appBridge';
+import { isEmbeddedInShopify, loadAppBridge, SHOPIFY_API_KEY, shopifyAdminAppUrl } from './appBridge';
 import { fetchShop, type ShopInfo } from './shopifyAdminClient';
 import ShopifyInstallPage from './ShopifyInstallPage';
 import ShopifyOverviewPage from './ShopifyOverviewPage';
@@ -51,9 +51,16 @@ export default function ShopifyAdminRoutes() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    // A top-level visit (no admin frame) is either a merchant who opened the
-    // app URL directly or an install link — show the install screen.
+    // A top-level visit (no admin frame): with ?shop= we know the store, so
+    // send the merchant to the app inside their Shopify admin (Shopify shows
+    // its own install prompt if it isn't installed yet). Without a shop,
+    // show the install screen.
     if (!isEmbeddedInShopify() && !params.get('embedded')) {
+      const shop = params.get('shop');
+      if (shop && SHOPIFY_API_KEY && /^[a-z0-9][a-z0-9-]*.myshopify.com$/.test(shop)) {
+        window.location.replace(shopifyAdminAppUrl(shop));
+        return;
+      }
       setStatus('not-embedded');
       return;
     }

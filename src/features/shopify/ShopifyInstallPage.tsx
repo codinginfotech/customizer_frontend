@@ -1,12 +1,13 @@
 import { FormEvent, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Wordmark } from '../../layouts/MainLayout';
+import { shopifyAdminAppUrl } from './appBridge';
 
 /**
  * Top-level (non-embedded) landing for /shopify/admin and /shopify/install.
  * Merchants usually arrive from the Shopify admin, where the app is framed
  * and this page never shows; this handles direct visits and manual installs
- * by kicking off the OAuth flow on the API.
+ * by sending the merchant to the app inside their admin (managed install).
  */
 export default function ShopifyInstallPage() {
   const [params] = useSearchParams();
@@ -20,8 +21,16 @@ export default function ShopifyInstallPage() {
       setError('Enter your store domain, e.g. my-store.myshopify.com');
       return;
     }
+    // Shopify managed installation: the admin shows the scopes prompt itself
+    // (from shopify.app.toml) and then opens the app embedded.
+    window.location.href = shopifyAdminAppUrl(domain);
+  }
+
+  /** Classic OAuth on our API — for stores where managed install isn't available. */
+  function classicInstallUrl() {
+    const domain = normalizeShop(shop);
     const base = import.meta.env.VITE_API_URL || '/api';
-    window.location.href = `${base}/shopify/auth?shop=${encodeURIComponent(domain)}`;
+    return domain ? `${base}/shopify/auth?shop=${encodeURIComponent(domain)}` : null;
   }
 
   return (
@@ -62,8 +71,19 @@ export default function ShopifyInstallPage() {
             Continue to Shopify
           </button>
           <p className="mt-3 text-xs leading-relaxed text-gray-500">
-            You'll be asked to approve read access to products and orders. Already installed? Open
-            the app from your Shopify admin's <span className="font-medium">Apps</span> menu.
+            You'll be asked to approve read access to products and orders, then the app opens inside
+            your Shopify admin. Already installed? It's under <span className="font-medium">Apps</span>{' '}
+            in the admin.
+            {classicInstallUrl() && (
+              <>
+                {' '}
+                Trouble installing?{' '}
+                <a href={classicInstallUrl()!} className="underline decoration-gray-300 underline-offset-2">
+                  Use the classic install
+                </a>
+                .
+              </>
+            )}
           </p>
         </form>
       </main>

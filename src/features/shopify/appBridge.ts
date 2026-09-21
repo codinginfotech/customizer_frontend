@@ -67,6 +67,11 @@ export function isEmbeddedInShopify(): boolean {
   }
 }
 
+/** The app as opened from inside the merchant's Shopify admin. */
+export function shopifyAdminAppUrl(shopDomain: string): string {
+  return `https://${shopDomain}/admin/apps/${SHOPIFY_API_KEY}`;
+}
+
 export function shopifyToast(message: string, isError = false) {
   if (window.shopify?.toast) window.shopify.toast.show(message, { isError });
 }
